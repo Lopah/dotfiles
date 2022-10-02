@@ -1,0 +1,5 @@
+[user]
+	name = Daniel Jašek
+	email = jasekdan@gmail.com
+[commit]
+	gpgSign = true
