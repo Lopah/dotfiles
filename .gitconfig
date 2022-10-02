@@ -1,5 +1,13 @@
+[init]
+	defaultBranch = main
 [user]
 	name = Daniel Jašek
 	email = jasekdan@gmail.com
 [commit]
 	gpgSign = true
+[push]
+	default = current
+[color]
+	ui = auto
+[diff]
+	colorMoved = zebra
