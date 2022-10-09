@@ -12,9 +12,7 @@
     ~/.vimrc: nvim/.vimrc
     ~/.vim/bundle: nvim/.vim/bundle
     ~/.vim/colors: nvim/.vim/colors
-    ~/.config/neofetch/config.conf:
-        path: neofetch/.config/config.conf
-        create: true
+    ~/.config/neofetch/config.conf: neofetch/.config/config.conf
     ~/.bashrc:
         path: bashrc/
         create: true
