@@ -6,12 +6,14 @@
 
 - link:
     ~/.dotfiles: ''
-    ~/.tmux.conf: .tmux.conf
+    ~/.tmux.conf: tmux/.tmux.conf
     ~/.tmux: tmux/.tmux
     ~/.gitconfig: .gitconfig
     ~/.vimrc: nvim/.vimrc
-    ~/.vim: nvin/.vim
-    ~/.config/neofetch/config: neofetch/.config/config.conf
+    ~/.vim: nvim/.vim
+    ~/.config/neofetch/config:
+        path: neofetch/.config/config.conf
+        create: true
     ~/.bashrc:
         path: bashrc/
         create: true
