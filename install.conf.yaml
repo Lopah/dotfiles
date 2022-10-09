@@ -16,6 +16,9 @@
     ~/.bashrc:
         path: bashrc/
         create: true
+    ~/.config/fish:
+        path: fish/.config/fish
+        create: true
 
 - create:
     - ~/downloads
