@@ -29,4 +29,7 @@
     - ~/.vim/undo-history
 
 - shell:
-  - [git submodule update --init --recursive, Installing submodules]
+  -
+    command: git submodule update --init --recursive
+    description: Installing submodules
+    stderr: true
