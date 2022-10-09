@@ -19,13 +19,6 @@ alias la='ls -lha'
 alias df='df -h'
 alias du='du -ch'
 alias ipp='dig -4 +short myip.opendns.com @resolver1.opendns.com'
-alias yh='youtube-dl --continue --no-check-certificate --format=bestvideo+bestaudio[ext=m4a]/best --merge-output-format=mp4'
-alias yd='youtube-dl --continue --no-check-certificate --format=bestvideo+bestaudio --exec="ffmpeg -i {} -c:v dnxhd -profile:v dnxhr_lb -vf fps=25/1,format=yuv422p -c:a pcm_s16le {}.mov && rm {}"'
-alias ya='youtube-dl --continue --no-check-certificate --format=bestaudio -x --audio-format wav'
 
-# Blog commands
-alias generate='rm -f dst/.files && ssg5 src dst "Wolfgang\'s Blog" "http://notthebe.ee"'
-alias deploy='rsync --rsync-path "sudo -u www-data rsync" -avP --delete dst/ snowfall:/var/www/blog'
 
 test -e {$HOME}/.iterm2_shell_integration.fish ; and source {$HOME}/.iterm2_shell_integration.fish
-
