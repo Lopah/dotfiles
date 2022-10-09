@@ -10,8 +10,9 @@
     ~/.tmux: tmux/.tmux
     ~/.gitconfig: .gitconfig
     ~/.vimrc: nvim/.vimrc
-    ~/.vim: nvim/.vim
-    ~/.config/neofetch/config:
+    ~/.vim/bundle: nvim/.vim/bundle
+    ~/.vim/colors: nvim/.vim/colors
+    ~/.config/neofetch/config.conf:
         path: neofetch/.config/config.conf
         create: true
     ~/.bashrc:
