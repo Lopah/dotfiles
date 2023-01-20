@@ -20,6 +20,7 @@ fi
 
 alias rider="Rider.cmd"
 alias riderEA="RiderEA.cmd"
+alias webstorm="webstorm.cmd"
 alias pn="pnpm"
 
 alias ls="ls -F --color=auto --show-control-chars"
