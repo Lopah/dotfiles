@@ -1,13 +1,14 @@
 [init]
-	defaultBranch = main
+defaultBranch = main
 [user]
-	name = Daniel Jašek
-	email = jasekdan@gmail.com
+name = Daniel Jašek
+email = jasekdan@gmail.com
+signingkey = 455DE982DCC30C6E
 [commit]
-	gpgSign = true
+gpgSign = true
 [push]
-	default = current
+default = current
 [color]
-	ui = auto
+ui = auto
 [diff]
-	colorMoved = zebra
+colorMoved = zebra

@@ -1,28 +1,25 @@
 - defaults:
     link:
       relink: true
+      create: true
+      force: true
 
 - clean: ['~']
 
 - link:
-    ~/.dotfiles: ''
     ~/.tmux.conf: tmux/.tmux.conf
     ~/.tmux: tmux/.tmux
-    ~/.gitconfig: .gitconfig
+    ~/.gitconfig:
+        path: .gitconfig
+        force: false
+        relink: false
     ~/.vimrc: nvim/.vimrc
-    ~/.vim/bundle:
-        path: nvim/.vim/bundle
-        create: true
-    ~/.vim/colors:
-        path: nvim/.vim/colors
-        create: true
+    ~/.vim/bundle: nvim/.vim/bundle
+    ~/.vim/colors: nvim/.vim/colors
     ~/.config/neofetch/config.conf: neofetch/.config/config.conf
-    ~/.bashrc:
-        path: bashrc/
-        create: true
-    ~/.config/fish:
-        path: fish/.config/fish
-        create: true
+    ~/.bash_profile: .bash_profile
+    ~/.bashrc: bashrc
+    ~/.config/fish: fish/.config/fish
 
 - create:
     - ~/downloads
