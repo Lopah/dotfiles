@@ -19,7 +19,7 @@
     ~/.config/neofetch/config.conf: neofetch/.config/config.conf
     ~/.bash_profile: .bash_profile
     ~/.bashrc: bashrc
-    ~/.config/fish: fish/.config/fish
+    ~/.zshrc: zsh/.zshrc
 
 - create:
     - ~/downloads
