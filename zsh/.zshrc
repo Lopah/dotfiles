@@ -140,5 +140,6 @@ alias rider="Rider.cmd"
 alias riderEA="RiderEA.cmd"
 alias webstorm="webstorm.cmd"
 alias pn="pnpm"
+alias gitclean="git branch --merged | grep -v '\*\|master\|main\|develop' | xargs -n 1 git branch -d"
 
 export PROMPT_EOL_MARK=""
