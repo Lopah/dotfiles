@@ -1,4 +1,4 @@
-My own dotfiles.
+# Installation
 
 Install via bash (**HAS TO BE RUN AS ADMINISTRATOR**):
 
@@ -17,3 +17,10 @@ Also supports PowerShell:
 
 - HTTPS:
   `git clone https://github.com/Lopah/dotfiles.git && cd .\dotfiles && .\install.ps1`
+
+
+## Updating submodules
+
+```bash
+git submodule update --remote --merge
+```

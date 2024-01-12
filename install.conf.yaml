@@ -4,11 +4,7 @@
       create: true
       force: true
 
-- clean: ['~']
-
 - link:
-    ~/.tmux.conf: tmux/.tmux.conf
-    ~/.tmux: tmux/.tmux
     ~/.gitconfig:
         path: .gitconfig
         force: false
@@ -19,14 +15,19 @@
     ~/.config/neofetch/config.conf: neofetch/.config/config.conf
     ~/.bash_profile: .bash_profile
     ~/.bashrc: bashrc
-    ~/.zshrc: zsh/.zshrc
+    ~/.zshrc:
+        path: zsh/.zshrc
+        force: true
+        relink: false
 
 - create:
     - ~/downloads
     - ~/.vim/undo-history
 
 - shell:
-  -
-    command: git submodule update --init --recursive
+  - command: git submodule update --init --recursive
     description: Installing submodules
+    stderr: true
+  - command: git clone git@github.com:powerline/fonts.git && sh fonts/install.sh && rm -r fonts
+    description: Installing powerline fonts
     stderr: true

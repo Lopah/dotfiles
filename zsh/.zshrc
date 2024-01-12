@@ -1,178 +1,84 @@
-# Download Znap, if it's not there yet.
-[[ -f ~/git/zsh-snap/znap.zsh ]] ||
-    git clone --depth 1 -- \
-        https://github.com/marlonrichert/zsh-snap.git ~/git/zsh-snap
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:/usr/local/bin:$PATH
 
-source ~/git/zsh-snap/znap.zsh  # Start Znap
+# Path to your oh-my-zsh installation.
+export ZSH=~/.oh-my-zsh
 
-# `znap prompt` makes your prompt visible in just 15-40ms!
-znap prompt sindresorhus/pure
+# Set name of the theme to load. Optionally, if you set this to "random"
+# it'll load a random theme each time that oh-my-zsh is loaded.
+# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
+ZSH_THEME="agnoster"
 
-# `znap source` automatically downloads and starts your plugins.
-znap source marlonrichert/zsh-autocomplete
-znap source zsh-users/zsh-autosuggestions
-znap source zsh-users/zsh-syntax-highlighting
+# Uncomment the following line to use case-sensitive completion.
+# CASE_SENSITIVE="true"
 
-# `znap eval` caches and runs any kind of command output for you.
-znap eval iterm2 'curl -fsSL https://iterm2.com/shell_integration/zsh'
+# Uncomment the following line to use hyphen-insensitive completion. Case
+# sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
 
-# `znap function` lets you lazy-load features you don't always need.
-znap function _pyenv pyenv 'eval "$( pyenv init - --no-rehash )"'
-compctl -K    _pyenv pyenv
+# Uncomment the following line to disable bi-weekly auto-update checks.
+# DISABLE_AUTO_UPDATE="true"
 
-# Set up the prompt
+# Uncomment the following line to change how often to auto-update (in days).
+# export UPDATE_ZSH_DAYS=13
 
-autoload -Uz promptinit
-promptinit
-prompt adam1
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
 
-setopt histignorealldups sharehistory
+# Uncomment the following line to disable auto-setting terminal title.
+# DISABLE_AUTO_TITLE="true"
 
-# Use emacs keybindings even if our EDITOR is set to vi
-bindkey -e
+# Uncomment the following line to enable command auto-correction.
+#ENABLE_CORRECTION="true"
 
-# Keep 1000 lines of history within the shell and save it to ~/.zsh_history:
-HISTSIZE=1000
-SAVEHIST=1000
-HISTFILE=~/.zsh_history
+# Uncomment the following line to display red dots whilst waiting for completion.
+COMPLETION_WAITING_DOTS="true"
 
-# Use modern completion system
-autoload -Uz compinit
-compinit
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-zstyle ':completion:*' auto-description 'specify: %d'
-zstyle ':completion:*' completer _expand _complete _correct _approximate
-zstyle ':completion:*' format 'Completing %d'
-zstyle ':completion:*' group-name ''
-zstyle ':completion:*' menu select=2
-eval "$(dircolors -b)"
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*' list-colors ''
-zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
-zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=* l:|=*'
-zstyle ':completion:*' menu select=long
-zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
-zstyle ':completion:*' use-compctl false
-zstyle ':completion:*' verbose true
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+HIST_STAMPS="dd.mm.yyyy"
 
-zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
-zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(git docker docker-compose mvn svn vagrant)
 
-# Configure Aliases
-alias cll='clear; ls -lah'
-alias countFiles='ls -1 | wc -l'
-alias htop='ntop'
-alias ll='ls -lah'
-alias ls='ls -F --color=auto --show-control-chars'
+source $ZSH/oh-my-zsh.sh
 
-zstyle ':autocomplete:*' default-context ''
-# '': Start each new command line with normal autocompletion.
-# history-incremental-search-backward: Start in live history search mode.
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
 
-zstyle ':autocomplete:*' min-delay 0.05  # seconds (float)
-# Wait this many seconds for typing to stop, before showing completions.
+# Preferred editor for local and remote sessions
+if [[ -n $SSH_CONNECTION ]]; then
+    export EDITOR='vim'
+else
+    export EDITOR='mvim'
+fi
 
-zstyle ':autocomplete:*' min-input 1  # characters (int)
-# Wait until this many characters have been typed, before showing completions.
+# ssh
+export SSH_KEY_PATH="~/.ssh/rsa_id"
 
-zstyle ':autocomplete:*' ignored-input '' # extended glob pattern
-# '':     Always show completions.
-# '..##': Don't show completions for the current word, if it consists of two
-#         or more dots.
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-zstyle ':autocomplete:*' list-lines 16  # int
-# If there are fewer than this many lines below the prompt, move the prompt up
-# to make room for showing this many lines of completions (approximately).
-
-zstyle ':autocomplete:history-search:*' list-lines 16  # int
-# Show this many history lines when pressing ↑.
-
-zstyle ':autocomplete:history-incremental-search-*:*' list-lines 16  # int
-# Show this many history lines when pressing ⌃R or ⌃S.
-
-zstyle ':autocomplete:*' insert-unambiguous no
-# no:  Tab inserts the top completion.
-# yes: Tab first inserts a substring common to all listed completions, if any.
-
-zstyle ':autocomplete:*' fzf-completion no
-# no:  Tab uses Zsh's completion system only.
-# yes: Tab first tries Fzf's completion, then falls back to Zsh's.
-# ⚠️ NOTE: This setting can NOT be changed at runtime and requires that you
-# have installed Fzf's shell extensions.
-
-# Add a space after these completions:
-zstyle ':autocomplete:*' add-space \
-    executables aliases functions builtins reserved-words commands
-
-
-##
-# Config in this section should come BEFORE sourcing Autocomplete and cannot be
-# changed at runtime.
-#
-
-# Autocomplete automatically selects a backend for its recent dirs completions.
-# So, normally you won't need to change this.
-# However, you can set it if you find that the wrong backend is being used.
-zstyle ':autocomplete:recent-dirs' backend cdr
-# cdr:  Use Zsh's `cdr` function to show recent directories as completions.
-# no:   Don't show recent directories.
-# zsh-z|zoxide|z.lua|z.sh|autojump|fasd: Use this instead (if installed).
-# ⚠️ NOTE: This setting can NOT be changed at runtime.
-
-zstyle ':autocomplete:*' widget-style complete-word
-# complete-word: (Shift-)Tab inserts the top (bottom) completion.
-# menu-complete: Press again to cycle to next (previous) completion.
-# menu-select:   Same as `menu-complete`, but updates selection in menu.
-# ⚠️ NOTE: This setting can NOT be changed at runtime.
-
-
-##
-# Config in this section should come AFTER sourcing Autocomplete.
-#
-
-# Up arrow:
-bindkey '\e[A' up-line-or-search
-bindkey '\eOA' up-line-or-search
-# up-line-or-search:  Open history menu.
-# up-line-or-history: Cycle to previous history line.
-
-# Down arrow:
-bindkey '\e[B' down-line-or-select
-bindkey '\eOB' down-line-or-select
-# down-line-or-select:  Open completion menu.
-# down-line-or-history: Cycle to next history line.
-
-# Control-Space:
-bindkey '\0' set-mark-command
-# list-expand:      Reveal hidden completions.
-# set-mark-command: Activate text selection.
-
-# Uncomment the following lines to disable live history search:
-# zle -A {.,}history-incremental-search-forward
-# zle -A {.,}history-incremental-search-backward
-
-# Return key in completion menu & history menu:
-bindkey -M menuselect '\r' accept-line
-# .accept-line: Accept command line.
-# accept-line:  Accept selection and exit menu.
-
-zstyle ':completion:*' auto-description 'specify: %d'
-zstyle ':completion:*' completer _expand _complete _correct _approximate
-zstyle ':completion:*' format 'Completing %d'
-zstyle ':completion:*' group-name ''
-zstyle ':completion:*' menu select=2
-eval "$(dircolors -b)"
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*' list-colors ''
-zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
-zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=* l:|=*'
-zstyle ':completion:*' menu select=long
-zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
-zstyle ':completion:*' use-compctl false
-zstyle ':completion:*' verbose true
-
-zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
-zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    #alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
 
 # Configure Aliases
 alias cll='clear; ls -lah'
@@ -180,3 +86,12 @@ alias countFiles='ls -1 | wc -l'
 alias htop='ntop'
 alias ll='ls -lah'
 alias ls='ls -F --color=auto --show-control-chars'
+alias la="ls -A"
+alias l="ls -CF"
+alias vi="vim"
+alias rider="Rider.cmd"
+alias riderEA="RiderEA.cmd"
+alias webstorm="webstorm.cmd"
+alias pn="pnpm"
+
+export PROMPT_EOL_MARK=""

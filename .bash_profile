@@ -1,5 +1,9 @@
 ~/.bashrc/.bash_profile
 
+if [ -t 1 ]; then
+  exec zsh
+fi
+
 alias ls='ls -F --color=auto --show-control-chars'
 alias ll='ls -l'
 
@@ -27,17 +31,25 @@ alias ls="ls -F --color=auto --show-control-chars"
 alias ll="ls -lah"
 alias la="ls -A"
 alias l="ls -CF"
+alias vi="vim"
 
-case "$TERM" in
-xterm*)
-  # The following programs are known to require a Win32 Console
-  # for interactive usage, therefore let's launch them through winpty
-  # when run inside `mintty`.
-  for name in node ipython php php5 psql python2.7; do
-    case "$(type -p "$name".exe 2>/dev/null)" in
-    '' | /usr/bin/*) continue ;;
-    esac
-    alias $name="winpty $name.exe"
-  done
+case "$OSTYPE" in cygwin* | msys*)
+  case "$TERM" in
+  xterm*)
+    # The following programs are known to require a Win32 Console
+    # for interactive usage, therefore let's launch them through winpty
+    # when run inside `mintty`.
+    for name in node ipython php php5 psql python2.7; do
+      case "$(type -p "$name".exe 2>/dev/null)" in
+      '' | /usr/bin/*) continue ;;
+      esac
+      alias $name="winpty $name.exe"
+    done
+    ;;
+  esac
   ;;
 esac
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
