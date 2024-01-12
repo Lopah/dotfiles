@@ -65,6 +65,36 @@ fi
 # ssh
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 
+# ssh agent
+env=~/.ssh/agent.env
+
+agent_load_env() { test -f "$env" && . "$env" >|/dev/null; }
+
+agent_start() {
+    (
+        umask 077
+        ssh-agent >|"$env"
+    )
+    . "$env" >|/dev/null
+}
+
+agent_load_env
+
+# agent_run_state: 0=agent running w/ key; 1=agent w/o key; 2=agent not running
+agent_run_state=$(
+    ssh-add -l >|/dev/null 2>&1
+    echo $?
+)
+
+if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
+    agent_start
+    ssh-add ~/.ssh/main
+elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
+    ssh-add ~/.ssh/main
+fi
+
+unset env
+
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -80,10 +110,27 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
+case "$OSTYPE" in cygwin* | msys*)
+    case "$TERM" in
+    xterm*)
+        # The following programs are known to require a Win32 Console
+        # for interactive usage, therefore let's launch them through winpty
+        # when run inside `mintty`.
+        for name in node ipython php php5 psql python2.7; do
+            case "$(type -p "$name".exe 2>/dev/null)" in
+            '' | /usr/bin/*) continue ;;
+            esac
+            alias $name="winpty $name.exe"
+        done
+        ;;
+    esac
+    alias htop='ntop'
+    ;;
+esac
+
 # Configure Aliases
 alias cll='clear; ls -lah'
 alias countFiles='ls -1 | wc -l'
-alias htop='ntop'
 alias ll='ls -lah'
 alias ls='ls -F --color=auto --show-control-chars'
 alias la="ls -A"
