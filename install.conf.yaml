@@ -19,6 +19,9 @@
         path: zsh/.zshrc
         force: true
         relink: false
+    /etc/profile.d/01-global-aliases.sh:
+        path: zsh/01-global-aliases.sh
+        mode: 0755
 
 - create:
     - ~/downloads
