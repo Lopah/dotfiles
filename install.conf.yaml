@@ -17,8 +17,6 @@
     ~/.bashrc: bashrc
     ~/.zshrc:
         path: zsh/.zshrc
-        force: true
-        relink: false
     /etc/profile.d/01-global-aliases.sh:
         path: zsh/01-global-aliases.sh
         mode: 0755
@@ -31,6 +29,6 @@
   - command: git submodule update --init --recursive
     description: Installing submodules
     stderr: true
-  - command: git clone git@github.com:powerline/fonts.git && sh fonts/install.sh && rm -r fonts
+  - command: git clone https://github.com/powerline/fonts.git && sh fonts/install.sh && rm -r fonts
     description: Installing powerline fonts
     stderr: true

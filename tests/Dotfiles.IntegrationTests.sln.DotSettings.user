@@ -1,0 +1,8 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=3b596359_002Db6aa_002D4002_002Db2ea_002Da9ab4f64d653/@EntryIndexedValue"></s:String>
+	<s:Boolean x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=3b596359_002Db6aa_002D4002_002Db2ea_002Da9ab4f64d653/@EntryIndexRemoved">True</s:Boolean>
+	
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=519e4199_002D817c_002D4167_002Dbcd9_002D614d4bf9afd9/@EntryIndexedValue"></s:String>
+	<s:Boolean x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=519e4199_002D817c_002D4167_002Dbcd9_002D614d4bf9afd9/@EntryIndexRemoved">True</s:Boolean>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=602e840d_002D376b_002D4d2f_002Dbf8d_002Dd88acca3a5b0/@EntryIndexedValue"></s:String>
+	<s:Boolean x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=602e840d_002D376b_002D4d2f_002Dbf8d_002Dd88acca3a5b0/@EntryIndexRemoved">True</s:Boolean></wpf:ResourceDictionary>
