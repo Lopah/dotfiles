@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+concurrency:
+  group: ${{ forgejo.workflow }}-${{ forgejo.head_ref || forgejo.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and test (.NET 10)
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: https://code.forgejo.org/actions/checkout@v7
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Cache NuGet packages
+        uses: https://code.forgejo.org/actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj', '**/Directory.Packages.props') }}
+
+      - name: Install .NET SDK
+        uses: https://github.com/actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: Build
+        run: dotnet build tests -c Release
+
+      - name: Test
+        run: dotnet test tests -c Release --no-build
