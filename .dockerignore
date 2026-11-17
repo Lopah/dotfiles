@@ -1,7 +1,8 @@
 ﻿**/.dockerignore
 **/.env
-**/.git
+# The installer synchronizes submodules, so retain Git metadata and dotbot/bin.
 **/.gitignore
+**/TestResults
 **/.project
 **/.settings
 **/.toolstarget
@@ -12,13 +13,13 @@
 **/*.dbmdl
 **/*.jfm
 **/azds.yaml
-**/bin
+tests/**/bin
 **/charts
 **/docker-compose*
 **/Dockerfile*
 **/node_modules
 **/npm-debug.log
-**/obj
+tests/**/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
 LICENSE

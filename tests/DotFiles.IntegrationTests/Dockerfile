@@ -1,8 +1,8 @@
-﻿FROM ubuntu:latest
+﻿FROM ubuntu:24.04
 
-COPY ./ /app/dotfiles
-
-RUN apt-get update && apt-get install -y \
+RUN apt-get -o Acquire::Retries=3 update && \
+    DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Retries=3 install -y --no-install-recommends \
+    ca-certificates \
     curl \
     git \
     bash \
@@ -14,14 +14,16 @@ RUN apt-get update && apt-get install -y \
     zip \
     zsh \
     python3 \
-    python3-dev  
+    python3-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN echo someone ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/someone
 
 RUN groupadd -g 1010 someone && \
     useradd -u 1010 -g someone -s /bin/bash -m someone && \
-    usermod -aG sudo someone && \
-    chown -R someone:someone /app/dotfiles
+    usermod -aG sudo someone
+
+COPY --chown=someone:someone ./ /app/dotfiles
 
 USER someone
 

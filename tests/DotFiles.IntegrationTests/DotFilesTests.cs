@@ -1,44 +1,39 @@
 using System.Threading.Tasks;
 using DotNet.Testcontainers.Containers;
-using FluentAssertions;
 using Xunit;
 
 namespace DotFiles.IntegrationTests;
 
-public class DotFilesTests : IClassFixture<DotFilesTestBase>
+public class DotFilesTests(DotFilesTestBase dotFilesTestBase) : IClassFixture<DotFilesTestBase>
 {
-    private readonly IContainer _container;
-
-    public DotFilesTests(DotFilesTestBase dotFilesTestBase)
-    {
-        _container = dotFilesTestBase.Container;
-    }
+    private readonly IContainer _container = dotFilesTestBase.Container;
 
     [Fact]
     public async Task ZshInstalled()
     {
-        var result = await _container.ExecAsync(new[] { "which", "zsh" });
+        var result = await _container.ExecAsync(["which", "zsh"], TestContext.Current.CancellationToken);
 
-        result.ExitCode.Should().Be(0);
+        Assert.Equal(0, result.ExitCode);
     }
 
     [Fact]
     public async Task DownloadsCreated()
     {
-        var res = await _container.ExecAsync(new[] { "sudo", "test", "/root/downloads" });
+        var res = await _container.ExecAsync(
+            ["sudo", "test", "-d", "/root/downloads"], TestContext.Current.CancellationToken);
 
-        res.ExitCode.Should().Be(0);
+        Assert.Equal(0, res.ExitCode);
     }
 
     [Fact]
     public async Task VimHistoryCreated()
     {
-        var res = await _container.ExecAsync(new[] { "sudo", "test", "/root/.vim/undo-history" });
-        
-        res.ExitCode.Should().Be(0);
+        var res = await _container.ExecAsync(
+            ["sudo", "test", "-d", "/root/.vim/undo-history"], TestContext.Current.CancellationToken);
+
+        Assert.Equal(0, res.ExitCode);
     }
-    
-    
+
     [Theory]
     [InlineData("/root/.gitconfig", "app/dotfiles/.gitconfig")]
     [InlineData("/root/.vimrc", "app/dotfiles/nvim/.vimrc")]
@@ -51,12 +46,9 @@ public class DotFilesTests : IClassFixture<DotFilesTestBase>
     [InlineData("/etc/profile.d/01-global-aliases.sh", "app/dotfiles/zsh/01-global-aliases.sh")]
     public async Task DotFilesCreated(string path, string linkedTo)
     {
-        var res = await _container.ExecAsync(new[] { "sudo", "readlink", path });
+        var res = await _container.ExecAsync(["sudo", "readlink", path], TestContext.Current.CancellationToken);
 
-        res.Stdout.Should().ContainEquivalentOf(linkedTo);
-        
-        res.ExitCode.Should().Be(0);
+        Assert.Equal(0, res.ExitCode);
+        Assert.Contains(linkedTo, res.Stdout, System.StringComparison.OrdinalIgnoreCase);
     }
-    
-    
 }

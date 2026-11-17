@@ -27,27 +27,42 @@ git submodule update --remote --merge
 
 ## Integration tests
 
-The tests target .NET 10. The SDK is pinned to the locally installed version,
-10.0.401, in `global.json` and `.config/mise.toml` (for mise users).
+Install the SDK pinned in [global.json](./global.json), or use
+[mise](./.config/mise.toml). The tests target .NET 11 with its default C# 15
+language version and use xUnit v3 with Microsoft.Testing.Platform.
 
-Start a Docker-compatible container engine, initialize the submodules, and run:
+Start Docker with its CLI available, then run from the repository root.
+The installer runs only inside the disposable test container, not on the host.
 
 ```bash
 git submodule update --init --recursive
+docker build --progress=plain --tag dotfiles-integration-tests:local \
+  --file tests/DotFiles.IntegrationTests/Dockerfile .
 dotnet build tests -c Release
-dotnet test tests -c Release --no-build
+dotnet test --solution tests/Dotfiles.IntegrationTests.sln -c Release --no-build
 ```
 
-On macOS with a rootful Podman machine, configure its Docker API socket first:
+Rebuild the image after changing installed files or submodules; tests use the
+built image without pulling from a registry. Set `DOTFILES_TEST_IMAGE` to use
+a different local image tag. Image setup is separate so package-manager failures
+appear in the build log rather than as failed test fixtures.
+
+With Podman, replace `docker build --progress=plain` with `podman build`.
+On macOS with a rootful Podman machine, configure its Docker API socket before
+running the tests:
 
 ```bash
 export DOCKER_HOST="unix://$(podman machine inspect --format '{{.ConnectionInfo.PodmanSocket.Path}}')"
 export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/run/podman/podman.sock
 ```
 
+After testing, remove the local image with
+`docker image rm dotfiles-integration-tests:local` (or `podman image rm`).
+
 ## Forgejo automation
 
 Workflows, issue templates, and code ownership live in `.forgejo/`.
 CI uses a runner registered with the `ubuntu-22.04` label,
-Node.js 24 or newer for JavaScript actions, and access to a Docker-compatible
-container engine for the integration tests.
+Node.js 24 or newer for JavaScript actions, and the Docker CLI connected to a
+Docker-compatible container engine for the integration tests. The image build
+and .NET tests must use the same engine.

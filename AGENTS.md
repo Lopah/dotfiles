@@ -47,12 +47,15 @@ The integration suite is in `tests/`. See
   `zsh -n zsh/.zshrc`, as applicable. Syntax checking avoids executing startup
   actions such as starting an SSH agent.
 - For installer, link-map, or integration-test changes, run
+  the image build in [the README](./README.md#integration-tests),
   `dotnet build tests -c Release`, then
-  `dotnet test tests -c Release --no-build` from the repository root.
+  `dotnet test --solution tests/Dotfiles.IntegrationTests.sln -c Release --no-build`
+  from the repository root.
   Initialize submodules first with `git submodule update --init --recursive`.
-- Integration tests need a Docker-compatible engine and network access. They
-  build an Ubuntu image and install the dotfiles inside it. This exercises the
-  Linux Bash installation, not the PowerShell entry point or every host OS.
+- Integration tests need a prebuilt test image, a Docker-compatible engine, and
+  network access. They install the dotfiles inside an Ubuntu container. This
+  exercises the Linux Bash installation, not the PowerShell entry point or every
+  host OS.
 - When adding or changing an installed path, update the link assertions in
   `tests/DotFiles.IntegrationTests/DotFilesTests.cs`. Keep container setup in
   `DotFilesTestBase.cs` and the test Dockerfile.

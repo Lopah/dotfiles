@@ -1,5 +1,10 @@
 name: CI
 
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  DOTNET_NOLOGO: '1'
+  DOTFILES_TEST_IMAGE: dotfiles-integration-tests:${{ forgejo.run_id }}
+
 on:
   push:
     branches: [ master ]
@@ -12,7 +17,7 @@ concurrency:
 
 jobs:
   build:
-    name: Build and test (.NET 10)
+    name: Build and test (.NET 11)
     runs-on: ubuntu-22.04
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v7
@@ -31,8 +36,21 @@ jobs:
         with:
           global-json-file: global.json
 
+      - name: Restore
+        run: dotnet restore tests/Dotfiles.IntegrationTests.sln
+
       - name: Build
-        run: dotnet build tests -c Release
+        run: dotnet build tests -c Release --no-restore
+
+      - name: Build integration test image
+        run: >-
+          docker build --progress=plain
+          --tag "$DOTFILES_TEST_IMAGE"
+          --file tests/DotFiles.IntegrationTests/Dockerfile .
 
       - name: Test
-        run: dotnet test tests -c Release --no-build
+        run: dotnet test --solution tests/Dotfiles.IntegrationTests.sln -c Release --no-build
+
+      - name: Remove integration test image
+        if: always()
+        run: docker image rm "$DOTFILES_TEST_IMAGE" || true
