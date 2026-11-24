@@ -1,4 +1,4 @@
-~/.bashrc/.bash_profile
+[ -f ~/.bashrc ] && . ~/.bashrc
 
 if [ -t 1 ]; then
   exec zsh

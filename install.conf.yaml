@@ -15,12 +15,15 @@
     ~/.config/neofetch/config.conf: neofetch/.config/config.conf
     ~/.config/git/prune-merged: git/prune-merged
     ~/.bash_profile: .bash_profile
-    ~/.bashrc: bashrc
+    ~/.bashrc: bashrc/.bash_profile
     ~/.zshrc:
         path: zsh/.zshrc
+    # macOS shells do not read /etc/profile.d, and writing under /etc would
+    # require running the installer with sudo.
     /etc/profile.d/01-global-aliases.sh:
         path: zsh/01-global-aliases.sh
         mode: 0755
+        if: '[ "$(uname)" != Darwin ]'
 
 - create:
     - ~/downloads
@@ -30,6 +33,8 @@
   - command: git submodule update --init --recursive
     description: Installing submodules
     stderr: true
-  - command: git clone https://github.com/powerline/fonts.git && sh fonts/install.sh && rm -r fonts
+  # The fonts serve the agnoster zsh theme, which zsh/.zshrc does not use on
+  # macOS.
+  - command: if [ "$(uname)" = Darwin ]; then echo "Skipping powerline fonts on macOS"; else git clone https://github.com/powerline/fonts.git && sh fonts/install.sh && rm -r fonts; fi
     description: Installing powerline fonts
     stderr: true

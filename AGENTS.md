@@ -31,6 +31,11 @@ or reviewing tracker work.
   `~/.gitconfig` unless the user requests a policy change.
 - Check the target shell and operating system before changing startup files or
   aliases. A syntax check on macOS does not establish Linux or Windows behavior.
+- `zsh/.zshrc` serves macOS, Linux, and Windows. Keep settings that need GNU
+  tools, a Linux ssh-agent, or the Powerline fonts inside its non-macOS blocks.
+- `.gitconfig` is shared by every machine. Machine-specific values, such as the
+  signing key, gpg path, credential helpers, or an editor not installed
+  everywhere, belong in the untracked `~/.gitconfig.local` that it includes.
 - `dotbot` and the plugins listed in `.gitmodules` are upstream submodules.
   Change their pinned revisions only when requested; avoid editing their
   contents as part of an unrelated configuration change.

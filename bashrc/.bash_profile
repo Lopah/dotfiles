@@ -101,10 +101,10 @@ agent_run_state=$(
   echo $?
 )
 
-if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
+if { [ ! "$SSH_AUTH_SOCK" ] || [ "$agent_run_state" = 2 ]; } && [ -f ~/.ssh/rsa_id ]; then
   agent_start
   ssh-add ~/.ssh/rsa_id
-elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
+elif [ "$SSH_AUTH_SOCK" ] && [ "$agent_run_state" = 1 ] && [ -f ~/.ssh/rsa_id ]; then
   ssh-add ~/.ssh/rsa_id
 fi
 

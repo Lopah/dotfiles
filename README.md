@@ -1,6 +1,14 @@
 # Installation
 
-Install via bash (**HAS TO BE RUN AS ADMINISTRATOR**):
+Install via bash. On Linux, run it as administrator because the installer
+writes `/etc/profile.d/01-global-aliases.sh`. On macOS, run it as your own
+user; it skips that file and the Powerline fonts.
+
+The installer replaces an existing `~/.zshrc` and other linked files, except
+`~/.gitconfig`: an existing regular file is kept and reported. To adopt the
+shared Git configuration on such a machine, move its machine-specific settings
+into `~/.gitconfig.local` (see below) and remove `~/.gitconfig` before
+installing.
 
 - SSH:
   `git clone ssh://git@git.lopah.eu/lopah/dotfiles.git && cd dotfiles && ./install`
@@ -18,6 +26,25 @@ Also supports PowerShell:
 - HTTPS:
   `git clone https://git.lopah.eu/lopah/dotfiles.git && cd .\dotfiles && .\install.ps1`
 
+
+## Machine-specific Git settings
+
+`.gitconfig` includes `~/.gitconfig.local` last, so values there override the
+shared ones. Git ignores the include if the file does not exist. Keep settings
+that differ between machines there, for example:
+
+```ini
+[user]
+	signingkey = <key id from gpg --list-secret-keys --keyid-format long>
+[gpg]
+	program = /opt/homebrew/bin/gpg
+[core]
+	editor = vi
+```
+
+`~/.gitconfig` is a link into this repository, so `git config --global`
+writes to the tracked file. Use `git config --file ~/.gitconfig.local` for
+machine-specific values.
 
 ## Updating submodules
 

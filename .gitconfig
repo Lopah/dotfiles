@@ -1,17 +1,20 @@
+# Shared across machines. Settings that depend on the machine, such as the
+# signing key, gpg path, credential helpers or an editor that is not installed
+# everywhere, belong in ~/.gitconfig.local (see README).
 [init]
-defaultBranch = main
+	defaultBranch = main
 [user]
-name = Daniel Jašek
-email = jasekdan@gmail.com
-signingkey = 455DE982DCC30C6E
+	name = Lopah
+	email = jasekdan@gmail.com
 [commit]
-gpgSign = true
+	gpgSign = true
 [push]
-default = current
+	default = current
+	autoSetupRemote = true
 [color]
-ui = auto
+	ui = auto
 [diff]
-colorMoved = zebra
+	colorMoved = zebra
 [core]
 	editor = nvim
 # tea has no equivalent of `gh pr create --fill`, and it only skips its prompts
@@ -24,3 +27,7 @@ colorMoved = zebra
 	# The script is linked by install.conf.yaml; it is too long to stay
 	# reviewable as an inline alias.
 	prune-merged = "!~/.config/git/prune-merged"
+# Last, so machine-specific values override the shared ones. Git skips the
+# include when the file does not exist.
+[include]
+	path = ~/.gitconfig.local
