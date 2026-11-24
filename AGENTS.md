@@ -20,8 +20,11 @@ or reviewing tracker work.
 
 ## Installation boundaries
 
-- `install.conf.yaml` owns Dotbot's link targets and installation tasks.
-  `install` and `install.ps1` are the Bash and PowerShell entry points.
+- `install.conf.yaml` owns the Dotbot link targets and tasks shared by every
+  system. `install` (Bash) also runs `install.unix.conf.yaml` for macOS and
+  Linux, and `install.ps1` (PowerShell) runs `install.windows.conf.yaml`.
+  On Windows Dotbot runs commands and `if` tests through cmd.exe, so keep POSIX
+  shell syntax out of the shared and Windows files.
 - Test installation in containers. Running either installer on the host can
   replace home-directory configuration, write to `/etc/profile.d`, download
   fonts, and initialize submodules. Ask before applying an installation to the

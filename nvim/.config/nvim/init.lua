@@ -18,8 +18,14 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+local windows = vim.fn.has('win32') == 1
+
 -- Options
-vim.opt.shell = 'bash'
+-- On Windows `bash` may resolve to WSL's bash.exe and run `:!` commands
+-- inside Linux, so keep Neovim's cmd.exe default there.
+if not windows then
+  vim.opt.shell = 'bash'
+end
 vim.opt.textwidth = 0
 vim.opt.clipboard = 'unnamedplus'
 vim.opt.guicursor = ''
@@ -156,5 +162,7 @@ vim.api.nvim_create_user_command('Compile', function()
   local dir = vim.fn.shellescape(vim.fn.expand('%:p:h'))
   local tex = vim.fn.shellescape(vim.fn.expand('%:t'))
   local base = vim.fn.shellescape(vim.fn.expand('%:t:r'))
-  vim.cmd('!cd ' .. dir .. ' && pdflatex ' .. tex .. ' && biber ' .. base .. ' && pdflatex ' .. tex)
+  -- cmd.exe needs /d to change drives as well as directories.
+  local cd = windows and 'cd /d ' or 'cd '
+  vim.cmd('!' .. cd .. dir .. ' && pdflatex ' .. tex .. ' && biber ' .. base .. ' && pdflatex ' .. tex)
 end, {})

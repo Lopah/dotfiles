@@ -1,0 +1,37 @@
+# macOS and Linux, run by `install` after install.conf.yaml. Commands run in
+# the user's $SHELL.
+- defaults:
+    link:
+      relink: true
+      create: true
+      force: true
+
+- link:
+    # An existing Neovim configuration is kept and reported rather than
+    # deleted; move it away to adopt this one.
+    ~/.config/nvim:
+        path: nvim/.config/nvim
+        force: false
+    # macOS shells do not read /etc/profile.d, and writing under /etc would
+    # require running the installer with sudo.
+    /etc/profile.d/01-global-aliases.sh:
+        path: zsh/01-global-aliases.sh
+        mode: 0755
+        if: '[ "$(uname)" != Darwin ]'
+
+- shell:
+  # dotbot's create step only sets the mode on new directories; earlier
+  # installs created this one world-writable.
+  - command: chmod 700 ~/.vim/undo-history
+    description: Restricting undo history to its owner
+    stderr: true
+  # Installs plugins at the revisions in lazy-lock.json rather than on the
+  # first interactive start.
+  - command: if command -v nvim >/dev/null 2>&1; then nvim --headless "+Lazy! restore" +qa; else echo "Neovim not found; skipping plugins"; fi
+    description: Installing Neovim plugins
+    stderr: true
+  # The fonts serve the agnoster zsh theme, which zsh/.zshrc does not use on
+  # macOS.
+  - command: if [ "$(uname)" = Darwin ]; then echo "Skipping powerline fonts on macOS"; else git clone https://github.com/powerline/fonts.git && sh fonts/install.sh && rm -r fonts; fi
+    description: Installing powerline fonts
+    stderr: true

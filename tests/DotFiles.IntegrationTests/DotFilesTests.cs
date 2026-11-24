@@ -35,6 +35,17 @@ public class DotFilesTests(DotFilesTestBase dotFilesTestBase) : IClassFixture<Do
         Assert.Equal(0, res.ExitCode);
     }
 
+    [Theory]
+    [InlineData("/root/.vim/undo-history", "700")]
+    [InlineData("/root/downloads", "755")]
+    public async Task CreatedDirectoryHasMode(string path, string mode)
+    {
+        var res = await _container.ExecAsync(["sudo", "stat", "-c", "%a", path], TestContext.Current.CancellationToken);
+
+        Assert.Equal(0, res.ExitCode);
+        Assert.Equal(mode, res.Stdout.Trim());
+    }
+
     [Fact]
     public async Task GitConfigIncludesMachineSpecificFile()
     {

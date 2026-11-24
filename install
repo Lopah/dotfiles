@@ -2,7 +2,8 @@
 
 set -e
 
-CONFIG="install.conf.yaml"
+# dotbot reads one configuration per run: the shared one, then the Unix one.
+CONFIGS=("install.conf.yaml" "install.unix.conf.yaml")
 DOTBOT_DIR="dotbot"
 
 DOTBOT_BIN="bin/dotbot"
@@ -12,4 +13,10 @@ cd "${BASEDIR}"
 git -C "${DOTBOT_DIR}" submodule sync --quiet --recursive
 git submodule update --init --recursive "${DOTBOT_DIR}"
 
-"${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${CONFIG}" "${@}"
+# Run every configuration even if one reports a failure, such as a kept
+# ~/.gitconfig, and report it at the end, as a single dotbot run would.
+status=0
+for CONFIG in "${CONFIGS[@]}"; do
+  "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${CONFIG}" "${@}" || status=$?
+done
+exit "${status}"

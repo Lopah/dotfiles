@@ -1,0 +1,22 @@
+# Windows, run by `install.ps1` after install.conf.yaml. dotbot runs commands
+# and `if` tests through cmd.exe on Windows, so POSIX shell syntax fails here.
+- defaults:
+    link:
+      relink: true
+      create: true
+      force: true
+
+- link:
+    # Neovim on Windows reads its configuration from %LOCALAPPDATA%\nvim, not
+    # ~/.config/nvim. An existing configuration is kept and reported.
+    ${LOCALAPPDATA}/nvim:
+        path: nvim/.config/nvim
+        force: false
+
+- shell:
+  # Windows PowerShell ships with Windows; cmd.exe cannot express the
+  # skip-when-missing check without hiding a failed restore.
+  - command: 'powershell -NoProfile -Command "if (Get-Command nvim -ErrorAction SilentlyContinue) { nvim --headless ''+Lazy! restore'' +qa; exit $LASTEXITCODE } else { ''Neovim not found; skipping plugins'' }"'
+    description: Installing Neovim plugins
+    stdout: true
+    stderr: true

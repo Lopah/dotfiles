@@ -48,9 +48,11 @@ machine-specific values.
 
 ## Neovim
 
-The installer links `~/.config/nvim` to `nvim/.config/nvim` and installs the
-plugins at the revisions in `lazy-lock.json` with lazy.nvim. An existing
-`~/.config/nvim` is kept and reported; move it away to adopt this one.
+The installer links Neovim's configuration directory to `nvim/.config/nvim`
+and installs the plugins at the revisions in `lazy-lock.json` with lazy.nvim:
+`~/.config/nvim` on macOS and Linux, `%LOCALAPPDATA%\nvim` on Windows. An
+existing configuration directory is kept and reported; move it away to adopt
+this one.
 
 - Requires Neovim 0.12.4 or newer, VimTeX's minimum. Ubuntu's `neovim`
   package is older; use the [official release](https://github.com/neovim/neovim/releases)
@@ -62,6 +64,10 @@ plugins at the revisions in `lazy-lock.json` with lazy.nvim. An existing
   VimTeX compilation, and `npm install -g livedown` for Markdown preview.
 - On machines without Neovim, `EDITOR` falls back to `vim`, which reads the
   plugin-free `nvim/.vimrc`.
+- On Windows, the plugin step runs through Windows PowerShell. Git's
+  `core.editor` is `nvim` everywhere; the `EDITOR` and `vim` alias in
+  `zsh/.zshrc` apply only where zsh runs, such as MSYS2, not in PowerShell or
+  Git Bash.
 
 Machines installed before the move to lazy.nvim keep the old Vundle and
 vim-sneak checkouts under `nvim/.vim/bundle` as untracked directories. Delete

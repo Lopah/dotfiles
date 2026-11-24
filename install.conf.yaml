@@ -1,3 +1,6 @@
+# Shared by every system. `install` adds install.unix.conf.yaml and
+# `install.ps1` adds install.windows.conf.yaml; dotbot reads one file per run,
+# so each file repeats these defaults.
 - defaults:
     link:
       relink: true
@@ -15,39 +18,23 @@
         relink: false
     ~/.vimrc: nvim/.vimrc
     ~/.vim/colors: nvim/.vim/colors
-    # An existing Neovim configuration is kept and reported rather than
-    # deleted; move it away to adopt this one.
-    ~/.config/nvim:
-        path: nvim/.config/nvim
-        force: false
     ~/.config/neofetch/config.conf: neofetch/.config/config.conf
     ~/.config/git/prune-merged: git/prune-merged
     ~/.bash_profile: .bash_profile
     ~/.bashrc: bashrc/.bash_profile
     ~/.zshrc:
         path: zsh/.zshrc
-    # macOS shells do not read /etc/profile.d, and writing under /etc would
-    # require running the installer with sudo.
-    /etc/profile.d/01-global-aliases.sh:
-        path: zsh/01-global-aliases.sh
-        mode: 0755
-        if: '[ "$(uname)" != Darwin ]'
 
+# dotbot applies the mode with an explicit chmod, so without one these would
+# be world-writable regardless of the umask.
 - create:
-    - ~/downloads
-    - ~/.vim/undo-history
+    ~/downloads:
+        mode: 0755
+    # Undo files hold the contents of edited files.
+    ~/.vim/undo-history:
+        mode: 0700
 
 - shell:
   - command: git submodule update --init --recursive
     description: Installing submodules
-    stderr: true
-  # Installs plugins at the revisions in lazy-lock.json rather than on the
-  # first interactive start.
-  - command: if command -v nvim >/dev/null 2>&1; then nvim --headless "+Lazy! restore" +qa; else echo "Neovim not found; skipping plugins"; fi
-    description: Installing Neovim plugins
-    stderr: true
-  # The fonts serve the agnoster zsh theme, which zsh/.zshrc does not use on
-  # macOS.
-  - command: if [ "$(uname)" = Darwin ]; then echo "Skipping powerline fonts on macOS"; else git clone https://github.com/powerline/fonts.git && sh fonts/install.sh && rm -r fonts; fi
-    description: Installing powerline fonts
     stderr: true
