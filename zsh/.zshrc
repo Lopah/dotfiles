@@ -132,11 +132,17 @@ esac
 
 alias tpr="git pr"  # defined in .gitconfig so it also works outside zsh
 
+# Neovim where installed; machines without it keep Vim and nvim/.vimrc.
+if command -v nvim >/dev/null 2>&1; then
+  export EDITOR='nvim'
+  alias vim='nvim'
+else
+  export EDITOR='vim'
+fi
+
 # macOS provides its own ssh-agent and lacks GNU ls, dircolors and
 # notify-send, so these settings serve only the Linux and Windows machines.
 if [[ $OSTYPE != darwin* ]]; then
-  export EDITOR='vim'
-
   export SSH_KEY_PATH="$HOME/.ssh/rsa_id"
 
   # The agent's environment is saved to a file so every shell reuses one

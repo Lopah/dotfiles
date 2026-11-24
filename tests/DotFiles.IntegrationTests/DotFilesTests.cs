@@ -68,11 +68,45 @@ public class DotFilesTests(DotFilesTestBase dotFilesTestBase) : IClassFixture<Do
         Assert.Equal(string.Empty, res.Stderr);
     }
 
+    [Fact]
+    public async Task NeovimPluginsInstalled()
+    {
+        var res = await ExecInRootHomeAsync(
+            [
+                "nvim", "--headless",
+                "-c", "lua for _, p in ipairs(require('lazy').plugins()) do if not p._.installed then io.stdout:write(p.name .. ' ') end end",
+                "-c", "qa",
+            ], TestContext.Current.CancellationToken);
+
+        Assert.Equal(0, res.ExitCode);
+        Assert.Equal(string.Empty, res.Stdout.Trim());
+        Assert.Equal(string.Empty, res.Stderr);
+    }
+
+    [Theory]
+    [InlineData("md")]
+    [InlineData("py")]
+    [InlineData("tex")]
+    [InlineData("js")]
+    public async Task NeovimOpensFileWithoutMessages(string extension)
+    {
+        var res = await ExecInRootHomeAsync(
+            [
+                "nvim", "--headless", $"/tmp/dotfiles-test.{extension}",
+                "-c", "lua io.stdout:write(vim.fn.execute('messages'))",
+                "-c", "qa!",
+            ], TestContext.Current.CancellationToken);
+
+        Assert.Equal(0, res.ExitCode);
+        Assert.Equal(string.Empty, res.Stdout.Trim());
+        Assert.Equal(string.Empty, res.Stderr);
+    }
+
     [Theory]
     [InlineData("/root/.gitconfig", "app/dotfiles/.gitconfig")]
     [InlineData("/root/.vimrc", "app/dotfiles/nvim/.vimrc")]
-    [InlineData("/root/.vim/bundle", "app/dotfiles/nvim/.vim/bundle")]
     [InlineData("/root/.vim/colors", "app/dotfiles/nvim/.vim/colors")]
+    [InlineData("/root/.config/nvim", "app/dotfiles/nvim/.config/nvim")]
     [InlineData("/root/.config/neofetch/config.conf", "app/dotfiles/neofetch/.config/config.conf")]
     [InlineData("/root/.config/git/prune-merged", "app/dotfiles/git/prune-merged")]
     [InlineData("/root/.bash_profile", "app/dotfiles/.bash_profile")]

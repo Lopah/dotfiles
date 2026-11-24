@@ -46,6 +46,28 @@ that differ between machines there, for example:
 writes to the tracked file. Use `git config --file ~/.gitconfig.local` for
 machine-specific values.
 
+## Neovim
+
+The installer links `~/.config/nvim` to `nvim/.config/nvim` and installs the
+plugins at the revisions in `lazy-lock.json` with lazy.nvim. An existing
+`~/.config/nvim` is kept and reported; move it away to adopt this one.
+
+- Requires Neovim 0.12.4 or newer, VimTeX's minimum. Ubuntu's `neovim`
+  package is older; use the [official release](https://github.com/neovim/neovim/releases)
+  or Homebrew.
+- Update plugins with `:Lazy update`, then commit `lazy-lock.json`, which
+  lazy.nvim rewrites in this repository through the link.
+- Optional tools, without which the related features stay off silently:
+  `pynvim` in the Python that Neovim finds for python-mode, `latexmk` for
+  VimTeX compilation, and `npm install -g livedown` for Markdown preview.
+- On machines without Neovim, `EDITOR` falls back to `vim`, which reads the
+  plugin-free `nvim/.vimrc`.
+
+Machines installed before the move to lazy.nvim keep the old Vundle and
+vim-sneak checkouts under `nvim/.vim/bundle` as untracked directories. Delete
+that directory after pulling; the installer then removes the dangling
+`~/.vim/bundle` link.
+
 ## Updating submodules
 
 ```bash

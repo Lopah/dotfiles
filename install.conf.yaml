@@ -4,14 +4,22 @@
       create: true
       force: true
 
+# Removes the ~/.vim/bundle link left by the Vundle setup on existing installs.
+- clean:
+    - ~/.vim
+
 - link:
     ~/.gitconfig:
         path: .gitconfig
         force: false
         relink: false
     ~/.vimrc: nvim/.vimrc
-    ~/.vim/bundle: nvim/.vim/bundle
     ~/.vim/colors: nvim/.vim/colors
+    # An existing Neovim configuration is kept and reported rather than
+    # deleted; move it away to adopt this one.
+    ~/.config/nvim:
+        path: nvim/.config/nvim
+        force: false
     ~/.config/neofetch/config.conf: neofetch/.config/config.conf
     ~/.config/git/prune-merged: git/prune-merged
     ~/.bash_profile: .bash_profile
@@ -32,6 +40,11 @@
 - shell:
   - command: git submodule update --init --recursive
     description: Installing submodules
+    stderr: true
+  # Installs plugins at the revisions in lazy-lock.json rather than on the
+  # first interactive start.
+  - command: if command -v nvim >/dev/null 2>&1; then nvim --headless "+Lazy! restore" +qa; else echo "Neovim not found; skipping plugins"; fi
+    description: Installing Neovim plugins
     stderr: true
   # The fonts serve the agnoster zsh theme, which zsh/.zshrc does not use on
   # macOS.

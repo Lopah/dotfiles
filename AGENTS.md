@@ -36,9 +36,13 @@ or reviewing tracker work.
 - `.gitconfig` is shared by every machine. Machine-specific values, such as the
   signing key, gpg path, credential helpers, or an editor not installed
   everywhere, belong in the untracked `~/.gitconfig.local` that it includes.
-- `dotbot` and the plugins listed in `.gitmodules` are upstream submodules.
-  Change their pinned revisions only when requested; avoid editing their
-  contents as part of an unrelated configuration change.
+- `dotbot` is an upstream submodule. Change its pinned revision only when
+  requested; avoid editing its contents as part of an unrelated configuration
+  change.
+- Neovim plugins are managed by lazy.nvim and pinned in
+  `nvim/.config/nvim/lazy-lock.json`. Update the lockfile only when requested.
+  `nvim/.vimrc` is a plugin-free fallback for plain Vim that mirrors
+  `init.lua`; change both together.
 
 ## Validation
 
@@ -51,6 +55,11 @@ The integration suite is in `tests/`. See
   `bash -n bashrc/.bash_profile`, `bash -n zsh/01-global-aliases.sh`, or
   `zsh -n zsh/.zshrc`, as applicable. Syntax checking avoids executing startup
   actions such as starting an SSH agent.
+- For Neovim configuration changes, start Neovim headless with
+  `XDG_CONFIG_HOME=$PWD/nvim/.config` and `XDG_DATA_HOME`, `XDG_STATE_HOME`,
+  and `XDG_CACHE_HOME` pointing to a scratch directory, so the check neither
+  uses nor changes the host's plugins. Open files of the affected types and
+  confirm `:messages` stays empty.
 - For installer, link-map, or integration-test changes, run
   the image build in [the README](./README.md#integration-tests),
   `dotnet build tests -c Release`, then
