@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+# git prune-merged [--apply] [base]
+#
+# Deletes local branches whose work is already in <base> (default: origin/HEAD),
+# including squash- and rebase-merged ones, and removes their clean worktrees.
+# Dry run unless --apply is given.
+#
+# Written for macOS's bash 3.2: no associative arrays or mapfile.
+set -euo pipefail
+
+apply=0
+base=""
+for arg in "$@"; do
+  case "$arg" in
+    --apply) apply=1 ;;
+    -h|--help) sed -n '2,6p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -*) echo "unknown option: $arg" >&2; exit 2 ;;
+    *) base=$arg ;;
+  esac
+done
+
+remote=origin
+if git remote get-url "$remote" >/dev/null 2>&1; then
+  # Prune first so squash-merged PR branches show up as [gone] and the
+  # comparison runs against the remote's current base, not a stale one.
+  git fetch --prune --quiet "$remote"
+fi
+
+if [ -z "$base" ]; then
+  base=$(git symbolic-ref --quiet --short "refs/remotes/$remote/HEAD" 2>/dev/null || true)
+  if [ -z "$base" ]; then
+    for b in main master; do
+      if git rev-parse --verify --quiet "refs/remotes/$remote/$b" >/dev/null; then base="$remote/$b"; break; fi
+      if git rev-parse --verify --quiet "refs/heads/$b" >/dev/null; then base=$b; break; fi
+    done
+  fi
+fi
+[ -n "$base" ] || { echo "cannot determine base branch; pass it as an argument" >&2; exit 2; }
+git rev-parse --verify --quiet "$base^{commit}" >/dev/null || { echo "unknown base: $base" >&2; exit 2; }
+base_local=${base#"$remote"/}
+
+current=$(git symbolic-ref --quiet --short HEAD 2>/dev/null || true)
+main_wt=$(git worktree list --porcelain | sed -n '1s/^worktree //p')
+
+# Prints how <branch> reached base (merged/rebased/squashed), or fails.
+merge_kind() {
+  local b=$1 mb tmp
+  if git merge-base --is-ancestor "$b" "$base"; then echo merged; return 0; fi
+  mb=$(git merge-base "$base" "$b") || return 1
+  # Rebase merge: every branch commit has a patch-equivalent commit in base.
+  if ! git cherry "$base" "$b" | grep -q '^+'; then echo rebased; return 0; fi
+  # Squash merge: build a throwaway commit holding the branch's net diff and
+  # ask whether base contains a patch-equivalent commit. The dangling object
+  # is collected by the next gc. --no-gpg-sign because commit-tree's docs say
+  # it honours commit.gpgSign, which would prompt for every branch checked.
+  tmp=$(git commit-tree --no-gpg-sign "$b^{tree}" -p "$mb" -m _)
+  if git cherry "$base" "$tmp" | grep -q '^-'; then echo squashed; return 0; fi
+  return 1
+}
+
+# Prints "<path>\t<locked>" for the live worktree that has <branch> checked out.
+worktree_of() {
+  git worktree list --porcelain | awk -v ref="refs/heads/$1" '
+    function emit() { if (!done && b == ref && !pr) { print p "\t" l; done = 1 } }
+    /^worktree / { p = substr($0, 10); b = ""; l = 0; pr = 0 }
+    /^branch /   { b = substr($0, 8) }
+    /^locked/    { l = 1 }
+    /^prunable/  { pr = 1 }
+    /^$/         { emit() }
+    END          { emit() }'
+}
+
+run() {
+  if [ "$apply" -eq 1 ]; then "$@"; fi
+}
+
+verb="would delete"; [ "$apply" -eq 1 ] && verb="deleted"
+say() { printf '%-13s %s\n' "$1" "$2"; }
+echo "base: $base"
+
+# Worktrees whose directory was deleted by hand still pin their branch.
+if [ "$apply" -eq 1 ]; then git worktree prune; else git worktree prune --dry-run --verbose; fi
+
+gone_kept=""
+while IFS=$'\t' read -r b track; do
+  case "$b" in
+    "$current"|"$base_local"|main|master|develop) continue ;;
+  esac
+
+  if ! kind=$(merge_kind "$b"); then
+    [ "$track" = "[gone]" ] && gone_kept="$gone_kept $b"
+    continue
+  fi
+
+  wt_line=$(worktree_of "$b")
+  if [ -n "$wt_line" ]; then
+    wt=${wt_line%$'\t'*}
+    locked=${wt_line##*$'\t'}
+    if [ "$wt" = "$main_wt" ]; then
+      say skip "$b ($kind): checked out in the main worktree"; continue
+    elif [ "$locked" = 1 ]; then
+      say skip "$b ($kind): worktree $wt is locked"; continue
+    elif [ -n "$(git -C "$wt" status --porcelain)" ]; then
+      say skip "$b ($kind): worktree $wt has uncommitted or untracked files"; continue
+    fi
+    run git worktree remove "$wt"
+    say "$verb" "$b ($kind) + worktree $wt"
+  else
+    say "$verb" "$b ($kind)"
+  fi
+  # -D because -d only recognises ancestry, not squash or rebase merges.
+  run git branch --quiet -D "$b"
+done < <(git for-each-ref --format=$'%(refname:short)\t%(upstream:track)' refs/heads)
+
+for b in $gone_kept; do
+  say kept "$b: upstream is gone but its changes are not in $base"
+done
+[ "$apply" -eq 1 ] || echo "(dry run; pass --apply to delete)"

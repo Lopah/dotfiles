@@ -13,6 +13,7 @@
     ~/.vim/bundle: nvim/.vim/bundle
     ~/.vim/colors: nvim/.vim/colors
     ~/.config/neofetch/config.conf: neofetch/.config/config.conf
+    ~/.config/git/prune-merged: git/prune-merged
     ~/.bash_profile: .bash_profile
     ~/.bashrc: bashrc
     ~/.zshrc:

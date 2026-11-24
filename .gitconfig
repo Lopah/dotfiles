@@ -21,3 +21,6 @@ colorMoved = zebra
 # branch.
 [alias]
 	pr = "!f() { base=$(git symbolic-ref -q --short refs/remotes/origin/HEAD) || base=origin/main; range=\"$base..HEAD\"; count=$(git rev-list --count \"$range\") || return; if [ \"$count\" -eq 0 ]; then echo \"git pr: no commits ahead of $base\" >&2; return 1; fi; git push -u origin HEAD || return; if [ \"$count\" -eq 1 ]; then title=$(git log -1 --format=%s); body=$(git log -1 --format=%b); else title=$(git log --reverse --format=%s \"$range\" | head -n 1); body=$(git log --reverse --format='- %s' \"$range\"); fi; tea pr create --base \"${base#origin/}\" --title \"$title\" --description \"$body\" \"$@\"; }; f"
+	# The script is linked by install.conf.yaml; it is too long to stay
+	# reviewable as an inline alias.
+	prune-merged = "!~/.config/git/prune-merged"

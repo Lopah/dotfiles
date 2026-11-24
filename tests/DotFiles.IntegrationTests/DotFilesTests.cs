@@ -40,6 +40,7 @@ public class DotFilesTests(DotFilesTestBase dotFilesTestBase) : IClassFixture<Do
     [InlineData("/root/.vim/bundle", "app/dotfiles/nvim/.vim/bundle")]
     [InlineData("/root/.vim/colors", "app/dotfiles/nvim/.vim/colors")]
     [InlineData("/root/.config/neofetch/config.conf", "app/dotfiles/neofetch/.config/config.conf")]
+    [InlineData("/root/.config/git/prune-merged", "app/dotfiles/git/prune-merged")]
     [InlineData("/root/.bash_profile", "app/dotfiles/.bash_profile")]
     [InlineData("/root/.bashrc", "app/dotfiles/bashrc")]
     [InlineData("/root/.zshrc", "app/dotfiles/zsh/.zshrc")]
