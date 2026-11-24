@@ -14,3 +14,10 @@ ui = auto
 colorMoved = zebra
 [core]
 	editor = nvim
+# tea has no equivalent of `gh pr create --fill`, and it only skips its prompts
+# when a flag is passed. This alias pushes the branch and fills the title and
+# description from the commits (one commit: its subject and body; several: the
+# first subject plus a list of all subjects). The base is the remote default
+# branch.
+[alias]
+	pr = "!f() { base=$(git symbolic-ref -q --short refs/remotes/origin/HEAD) || base=origin/main; range=\"$base..HEAD\"; count=$(git rev-list --count \"$range\") || return; if [ \"$count\" -eq 0 ]; then echo \"git pr: no commits ahead of $base\" >&2; return 1; fi; git push -u origin HEAD || return; if [ \"$count\" -eq 1 ]; then title=$(git log -1 --format=%s); body=$(git log -1 --format=%b); else title=$(git log --reverse --format=%s \"$range\" | head -n 1); body=$(git log --reverse --format='- %s' \"$range\"); fi; tea pr create --base \"${base#origin/}\" --title \"$title\" --description \"$body\" \"$@\"; }; f"

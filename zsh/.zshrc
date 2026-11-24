@@ -141,5 +141,6 @@ alias riderEA="RiderEA.cmd"
 alias webstorm="webstorm.cmd"
 alias pn="pnpm"
 alias gitclean="git branch --merged | grep -v '\*\|master\|main\|develop' | xargs -n 1 git branch -d"
+alias tpr="git pr"  # defined in .gitconfig so it also works outside zsh
 
 export PROMPT_EOL_MARK=""
