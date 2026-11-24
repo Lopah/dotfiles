@@ -13,8 +13,8 @@ or pull-request descriptions, load the repo-local `documentation` skill or read
 
 This repository uses Forgejo at <https://git.lopah.eu/lopah/dotfiles>.
 For issue requirements, pull-request reviews, or tracker updates, load the
-repo-local `forgejo` skill or follow
-[its workflow](./.agents/skills/forgejo/SKILL.md). Retrieve the description,
+shared `forgejo` skill (`core:forgejo` in Claude Code) or follow
+[its workflow](https://git.lopah.eu/lopah/agent-skills/src/branch/main/plugins/core/skills/forgejo/SKILL.md). Retrieve the description,
 linked requirements, comments, and inline review discussions before implementing
 or reviewing tracker work.
 

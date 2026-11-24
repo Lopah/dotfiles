@@ -44,6 +44,6 @@ Checks run, results, and any untested platforms or blockers.
 Required prerequisites or migration steps.
 ```
 
-Use the [Forgejo skill](../../forgejo/SKILL.md) for publishing tracker updates.
+Use the shared [Forgejo skill](https://git.lopah.eu/lopah/agent-skills/src/branch/main/plugins/core/skills/forgejo/SKILL.md) for publishing tracker updates.
 Report actual validation results; a successful build alone does not establish
 that the installer or shell startup behavior works.
