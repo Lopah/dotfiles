@@ -6,8 +6,9 @@ repo; they are not configuration to install into the user's home directory.
 ## Documentation
 
 **Document why, not what.** Before writing comments, Markdown, commit messages,
-or pull-request descriptions, load the repo-local `documentation` skill or read
-[its standard](./.agents/skills/documentation/SKILL.md).
+or pull-request descriptions, load the shared `documentation` skill (`core:documentation` in Claude Code)
+or read [its standard](https://git.lopah.eu/lopah/agent-skills/src/branch/main/plugins/core/skills/documentation/SKILL.md),
+with this repository's [documentation profile](./docs/agents/documentation.md).
 
 ## Issues and pull requests
 
